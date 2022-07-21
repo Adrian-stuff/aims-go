@@ -1,0 +1,64 @@
+{{define "scripts"}}
+
+<style>
+  body>.grid {
+    height: 100%;
+  }
+
+  .column {
+    max-width: 500px;
+  }
+</style>
+<script>
+  $(document).ready(() => {
+    $(".ui.form").form({
+      fields: {
+        username: {
+          identifier: "username",
+          rules: [{ type: "empty", prompt: "Please enter your username" }],
+        },
+        password: {
+          identifier: "password",
+          rules: [
+            {
+              type: "empty",
+              prompt: "Please enter your password",
+            },
+            // {
+            //   type: "length[6]",
+            //   prompt: "Your password must be at least 6 characters",
+            // },
+          ],
+        },
+      },
+    });
+  });
+</script>
+{{end}}
+
+
+<div class="ui middle aligned center aligned grid">
+  <div class="column">
+    <form class="ui large form" id="login-form" method="post" action="/student/verify">
+      <div class="ui segment">
+        <div class="field">
+          <div class="ui left icon input">
+            <input id="input-username" type="text" name="username" placeholder="Username" required />
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui left icon input">
+            <input id="input-password" type="password" name="password" placeholder="Password" required />
+          </div>
+        </div>
+        <button class="ui fluid large teal submit button">Sign in</button>
+        <div class="ui error message"></div>
+      </div>
+    </form>
+    {{if .message.error}}
+    <div id="error-message" class="ui warning message">
+      {{.message.content}}
+    </div>
+    {{end}}
+  </div>
+</div>
