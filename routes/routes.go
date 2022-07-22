@@ -18,4 +18,5 @@ func PublicRoutes(g fiber.Router) {
 
 func PrivateRoutes(g fiber.Router) {
 	g.Get("/applicant", controllers.ApplicantController)
+	g.Get("/student/logout", controllers.LogoutController)
 }

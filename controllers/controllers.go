@@ -3,6 +3,7 @@ package controllers
 import (
 	"aims/db"
 	"aims/models"
+	"aims/utilities"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
@@ -10,12 +11,25 @@ import (
 )
 
 func RegisterGetController(c *fiber.Ctx) error {
+	token := c.Cookies("auth")
+	if token != "" {
+		if valid, err := utilities.CheckJWTToken(token); err == nil && valid {
+			return c.Redirect("/applicant")
+		}
+	}
 	return c.Render("views/register/index", fiber.Map{
 		"title":   "Register",
 		"message": flash.Get(c),
 	}, "layouts/login/base")
 }
 func LoginController(c *fiber.Ctx) error {
+	// implement redirect if login
+	token := c.Cookies("auth")
+	if token != "" {
+		if valid, err := utilities.CheckJWTToken(token); err == nil && valid {
+			return c.Redirect("/applicant")
+		}
+	}
 	return c.Render("views/login/index", fiber.Map{
 		"title":   "login",
 		"message": flash.Get(c),
@@ -37,5 +51,11 @@ func ApplicantController(c *fiber.Ctx) error {
 }
 
 func IndexController(c *fiber.Ctx) error {
+	token := c.Cookies("auth")
+	if token != "" {
+		if valid, err := utilities.CheckJWTToken(token); err == nil && valid {
+			return c.Redirect("/applicant")
+		}
+	}
 	return c.Redirect("/student/login")
 }

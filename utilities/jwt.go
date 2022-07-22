@@ -24,3 +24,10 @@ func CreateJWTToken(user models.User) (string, int64, error) {
 
 	return t, exp, nil
 }
+
+func CheckJWTToken(tokenString string) (bool, error) {
+
+	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) { return []byte(SecretKey), nil })
+
+	return token.Valid, err
+}

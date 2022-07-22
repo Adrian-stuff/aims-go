@@ -6,13 +6,13 @@ require (
 	github.com/gofiber/fiber/v2 v2.35.0
 	github.com/gofiber/jwt/v3 v3.2.13
 	github.com/gofiber/template v1.6.29
+	github.com/jackc/pgconn v1.12.1
 	github.com/sujit-baniya/flash v0.1.3
 	gorm.io/gorm v1.23.8
 )
 
 require (
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
-	github.com/jackc/pgconn v1.12.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgproto3/v2 v2.3.0 // indirect

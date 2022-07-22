@@ -4,9 +4,12 @@ import (
 	"aims/db"
 	"aims/models"
 	"aims/utilities"
+	"errors"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/jackc/pgconn"
 
 	"github.com/sujit-baniya/flash"
 	"golang.org/x/crypto/bcrypt"
@@ -31,6 +34,18 @@ func RegisterPostController(c *fiber.Ctx) error {
 	}
 
 	if err := db.DB.Create(&user).Error; err != nil {
+		// https://github.com/jackc/pgerrcode/blob/master/errcode.go
+		// errors
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) {
+			// duplicate error
+			if pgErr.Code == "23505" && strings.Contains(pgErr.Message, "users_email_key") {
+				// err = errors.New("email already exists")
+				return flash.WithError(c, fiber.Map{"content": "Email already used"}).Redirect("/student/register")
+			} else if pgErr.Code == "23505" && strings.Contains(pgErr.Message, "idx_users_username") {
+				return flash.WithError(c, fiber.Map{"content": "Username already used"}).Redirect("/student/register")
+			}
+		}
 		return flash.WithError(c, fiber.Map{"content": err}).Redirect("/student/register")
 	}
 
@@ -46,10 +61,6 @@ func VerifyPostController(c *fiber.Ctx) error {
 
 	req := db.DB.Where("username=?", formUsername).First(&user)
 	if err := req.Error; err != nil {
-		return err
-	}
-
-	if user.Id == 0 {
 		c.Status(fiber.StatusUnauthorized)
 		return flash.WithError(c, fiber.Map{"content": "User not found"}).Redirect("/student/login")
 	}
